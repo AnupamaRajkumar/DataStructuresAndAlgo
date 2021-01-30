@@ -18,6 +18,8 @@ private:
 	}Node;
 	Node *head = NULL;
 	Node *current = NULL;
+	Node *prev = NULL;
+	Node *next = NULL;
 	/*Linked list operation functions*/
 	void CreateList();
 	void InsertNode();
@@ -25,6 +27,7 @@ private:
 	void InsertAtEnd(size_t val);
 	void InsertAtPosition(size_t val, int position);
 	void DeleteNode();
+	void ReverseList();
 	size_t DeleteFromBegin();
 	size_t DeleteFromEnd();
 	size_t DeleteFromPosition(int position);

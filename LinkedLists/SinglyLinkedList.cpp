@@ -19,6 +19,7 @@ void SingleLL::SingleLLOperations() {
 		cout << "2. Insert an element in the list" << endl;
 		cout << "3. Delete an element from the list" << endl;
 		cout << "4. Display the list" << endl;
+		cout << "5. Reverse the list" << endl;
 		cout << "Please enter your choice" << endl;
 		cin >> choice;
 		switch (choice) {
@@ -33,6 +34,9 @@ void SingleLL::SingleLLOperations() {
 			break;
 		case 4:
 			this->PrintList();
+			break;
+		case 5 : 
+			this->ReverseList();
 			break;
 		default:
 			cerr << "Please enter a valid choice" << endl;
@@ -336,9 +340,24 @@ Date		: 20.01.2020
 ***************************************************************************/
 void SingleLL::PrintList() {
 	Node *ptr = head;
-	while (ptr->next != NULL) {
+	while (ptr != NULL) {
 		cout << ptr->val << " ";
 		ptr = ptr->next;
 	}
 	cout << endl;
+}
+
+
+void SingleLL::ReverseList() {
+	prev = NULL;
+	current = head;
+	while (current != NULL) {
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+	head = prev;
+	cout << "The reversed list is:" << endl;
+	this->PrintList();
 }

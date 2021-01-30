@@ -19,7 +19,7 @@ Input: coins = [1], amount = 0
 Output: 0
 ************************************************************************************/
 
-
+#if 0
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -68,3 +68,4 @@ int main() {
 	cout << "Coin count for amount " << amount << " is:" << coinCount << endl;;
 	return 0;
 }
+#endif

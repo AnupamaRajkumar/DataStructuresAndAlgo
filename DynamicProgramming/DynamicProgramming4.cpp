@@ -15,7 +15,7 @@ From the top-left corner, there are a total of 3 ways to reach the bottom-right 
 3. Down -> Right -> Down
 ******************************************************************************/
 
-
+#if 0
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -23,3 +23,35 @@ From the top-left corner, there are a total of 3 ways to reach the bottom-right 
 
 using namespace std;
 
+int UniquePaths(int m, int n) {
+	/*
+	m : rows, n : cols
+	*/
+	int** costArr = new int*[m];
+	for (int i = 0; i < m; ++i)
+		costArr[i] = new int[n];
+
+	for (int r = 0; r < m; r++) {
+		costArr[r][0] = 1;
+	}
+	for (int c = 0; c < n; c++) {
+		costArr[0][c] = 1;
+	}
+	for (int r = 1; r < m; r++) {
+		for (int c = 1; c < n; c++) {
+			costArr[r][c] = costArr[r - 1][c] + costArr[r][c - 1];
+		}
+	}
+	return costArr[m-1][n-1];
+}
+
+
+int main() {
+	int m, n, totalPaths;
+	m = 3;
+	n = 7;
+	totalPaths = UniquePaths(m, n);
+	cout << "Total number of paths:" << totalPaths << endl;
+	return 0;
+}
+#endif

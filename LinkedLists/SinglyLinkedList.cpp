@@ -1,6 +1,7 @@
 
 #include "SinglyLinkedList.h"
 
+
 /*************************************************************************
 Name		: SingleLLOperations()
 Parameters	: None
@@ -13,6 +14,7 @@ Date		: 20.01.2020
 ***************************************************************************/
 void SingleLL::SingleLLOperations() {
 	int choice, response = 1;
+	Node* head = NULL;
 	do {
 		cout << "Single Linked List Menu" << endl;
 		cout << "1. Create a linked list" << endl;
@@ -24,19 +26,19 @@ void SingleLL::SingleLLOperations() {
 		cin >> choice;
 		switch (choice) {
 		case 1:
-			this->CreateList();
+			head = this->CreateList();
 			break;
 		case 2:
-			this->InsertNode();
+			head = this->InsertNode(head);
 			break;
 		case 3:
-			this->DeleteNode();
+			head = this->DeleteNode(head);
 			break;
 		case 4:
-			this->PrintList();
+			this->PrintList(head);
 			break;
 		case 5 : 
-			this->ReverseList();
+			head = this->ReverseList(head);
 			break;
 		default:
 			cerr << "Please enter a valid choice" << endl;
@@ -69,13 +71,13 @@ SingleLL::SingleLL() {
 /*************************************************************************
 Name		: CreateList()
 Parameters	: None
-Returns		: Nothing
+Returns		: Pointer to the head node
 Function	: This function creates a single linked list. User can keep
 			  on adding values to the list 
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
-void SingleLL::CreateList() {
+SingleLL::Node* SingleLL::CreateList() {
 	int response = 1;
 	int cnt = 1;
 	do {
@@ -102,23 +104,26 @@ void SingleLL::CreateList() {
 	} while (response != 0);
 
 	/*display the created list*/
-	this->PrintList();
+	this->PrintList(head);
+	return head;
 }
 
 /*************************************************************************
 Name		: InsertNode()
-Parameters	: None
-Returns		: Nothing
+Parameters	: Pointer to the head node
+Returns		: Pointer to the new head node after insertion
 Function	: This function displays the menu for inserting nodes at various
 			  locations that can be chosen from a user menu
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-void SingleLL::InsertNode() {
+SingleLL::Node* SingleLL::InsertNode(SingleLL::Node* head) {
 	int choice;
 	size_t val;
-	int position;
+	int position, listLen;
+	Node* headNew;
+	headNew = head;
 	cout << "List insertion menu" << endl;
 	cout << "1. Add at the beginning" << endl;
 	cout << "2. Add at the end of the list" << endl;
@@ -129,54 +134,62 @@ void SingleLL::InsertNode() {
 	case 1:
 		cout << "Enter the value to be inserted" << endl;
 		cin >> val;
-		this->InsertAtBegin(val);
+		headNew = this->InsertAtBegin(val, head);
 		break;
 	case 2:
 		cout << "Enter the value to be inserted" << endl;
 		cin >> val;
-		this->InsertAtEnd(val);
+		this->InsertAtEnd(val, head);
 		break;
 	case 3:
 		cout << "Enter the value to be inserted" << endl;
 		cin >> val;
 		cout << "Enter the position to insert the node at" << endl;
 		cin >> position;
-		this->InsertAtPosition(val, position);
+		listLen = this->ListLength(head);
+		if (position > 0 && position <= listLen) {
+			headNew = this->InsertAtPosition(val, position, head);
+		}
+		else {
+			cerr << "The position must be greater than 0 and less than or equal to " << listLen << endl;
+		}
 		break;
 	default:
 		cerr << "Kindly enter valid choice" << endl;
 		break;
 	}
-	this->PrintList();
+	this->PrintList(headNew);
+	return headNew;
 }
 
 /*************************************************************************
 Name		: InsertAtBegin()
-Parameters	: value to be inserted
-Returns		: Nothing
+Parameters	: value to be inserted, Pointer to the head node
+Returns		: Pointer to the new head node after insertion
 Function	: This function inserts the value at the beginning of the list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-void SingleLL::InsertAtBegin(size_t val) {
+SingleLL::Node* SingleLL::InsertAtBegin(size_t val, SingleLL::Node* head) {
 	/*Inserting new node at the beginning of the list to create a new head*/
 	Node *newNode = (Node *)malloc(sizeof(Node));
 	newNode->val = val;
 	newNode->next = head;
 	head = newNode;
+	return head;
 }
 
 /*************************************************************************
 Name		: InsertAtEnd()
-Parameters	: value to be inserted
+Parameters	: value to be inserted, pointer to the head node
 Returns		: Nothing
 Function	: This function inserts the value at the end of the list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-void SingleLL::InsertAtEnd(size_t val) {
+void SingleLL::InsertAtEnd(size_t val, SingleLL::Node* head) {
 	/*Inserting the new node at the end of the list*/
 	Node *newNode = (Node *)malloc(sizeof(Node));
 	Node *ptr = head;
@@ -193,41 +206,57 @@ void SingleLL::InsertAtEnd(size_t val) {
 
 /*************************************************************************
 Name		: InsertAtPosition()
-Parameters	: value to be inserted, position at which to be inserted
-Returns		: Nothing
+Parameters	: value to be inserted, position at which to be inserted, 
+			  pointer to the head node
+Returns		: Pointer to the new head node after insertion
 Function	: This function inserts the value at the specified location
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-void SingleLL::InsertAtPosition(size_t val, int position) {
+SingleLL::Node* SingleLL::InsertAtPosition(size_t val, int position, SingleLL::Node* head) {
 	/*Inserting the new node after the position specified*/
 	Node *newNode = (Node *)malloc(sizeof(Node));
 	Node *ptr = head;
 	int count = 1;	//we consider the head position as the first position
-	while ((count < position) && (ptr->next != NULL)) {
-		ptr = ptr->next;
-		count++;
+	if (position == 1) {
+		newNode = this->InsertAtBegin(val, head);
 	}
-	newNode->val = val;
-	newNode->next = ptr->next;
-	ptr->next = newNode;
+	else {
+		while ((count < position) && (ptr->next != NULL)) {
+			ptr = ptr->next;
+			count++;
+		}
+		newNode->val = val;
+		newNode->next = ptr->next;
+		ptr->next = newNode;
+	}
+
+	if (position == 1) {
+		return newNode;
+	}
+	else {
+		return head;
+	}
 }
 
 /*************************************************************************
 Name		: DeleteNode()
-Parameters	: None
-Returns		: Nothing
+Parameters	: Pointer to the head node
+Returns		: Poiter to the new head node after deletion
 Function	: This function displays the menu for deleting nodes at various
 			  locations that can be chosen from a user menu
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-void SingleLL::DeleteNode() {
-	int choice;
-	size_t val;
+SingleLL::Node* SingleLL::DeleteNode(SingleLL::Node* head) {
+	int choice = 1;
+	int val = 0;
 	int position;
+	int listLen = 0;
+	Node* headNew;
+	headNew = head;
 	cout << "List deletion menu" << endl;
 	cout << "1. Delete from the beginning" << endl;
 	cout << "2. Delete from the end of the list" << endl;
@@ -236,119 +265,159 @@ void SingleLL::DeleteNode() {
 	cin >> choice;
 	switch (choice) {
 	case 1:
-		val = this->DeleteFromBegin();
+		headNew = this->DeleteFromBegin(head, val);
 		break;
 	case 2:
-		val = this->DeleteFromEnd();
+		this->DeleteFromEnd(head, val);
 		break;
 	case 3:
 		cout << "Enter the position to delete the node at" << endl;
 		cin >> position;
-		val = this->DeleteFromPosition(position);
+		listLen = this->ListLength(head);
+		if (position <= listLen && position > 0) {
+			headNew = this->DeleteFromPosition(position, head, val);
+		}
+		else {
+			cerr << "Position number should be greater than 0 and less than or equal to " << listLen << endl;
+		}
 		break;
 	default:
 		cerr << "Kindly enter valid choice" << endl;
 		break;
 	}
 	cout << "Deleted value is:" << val << endl;
-	this->PrintList();
+	this->PrintList(headNew);
+	return headNew;
 }
 
 /*************************************************************************
 Name		: DeleteFromBegin()
-Parameters	: none
-Returns		: value deleted
+Parameters	: Pointer to the head node, value of the deleted node
+Returns		: Pointer to the new head node after node deletion
 Function	: This function deletes the value from the beginning of the list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-size_t SingleLL::DeleteFromBegin() {
+SingleLL::Node* SingleLL::DeleteFromBegin(SingleLL::Node* head, int& val) {
 	/*delete the head node and make the next node as the new head*/
-	size_t val;
-	Node *prevHead;
-	val = head->val;
-	prevHead = head;
-	head = head->next;
-	free(prevHead);
-	return val;
+	if (head != NULL) {
+		Node *prevHead;
+		val = head->val;
+		prevHead = head;
+		head = head->next;
+		free(prevHead);
+		return head;
+	}
+	else {
+		val = NULL;
+		cerr << "Empty list, nothing to delete" << endl;
+		return 0;
+	}
 }
 
 
 /*************************************************************************
 Name		: DeleteFromEnd()
-Parameters	: none
-Returns		: value deleted
+Parameters	: Pointer to the head node, value of the deleted node
+Returns		: Nothing
 Function	: This function deletes the last value of the list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-size_t SingleLL::DeleteFromEnd() {
+void SingleLL::DeleteFromEnd(SingleLL::Node* head, int& val) {
 	/*delete the last node and make the penultimate node as the last node*/
-	size_t val;
 	Node *ptr, *prevPtr;
-	ptr = head;
-	prevPtr = head;
-	while (ptr->next != NULL) {
-		prevPtr = ptr;
-		ptr = ptr->next;
+	if (head != NULL) {
+		ptr = head;
+		prevPtr = head;
+		while (ptr->next != NULL) {
+			prevPtr = ptr;
+			ptr = ptr->next;
+		}
+		prevPtr->next = NULL;
+		val = ptr->val;
+		free(ptr);
 	}
-	prevPtr->next = NULL;
-	val = ptr->val;
-	free(ptr);
-
-	return val;
+	else {
+		val = NULL;
+		cerr << "Empty list, nothing to delete" << endl;
+		exit(0);
+	}
 }
 
 /*************************************************************************
 Name		: DeleteFromPosition()
-Parameters	: position
-Returns		: value deleted
+Parameters	: position, pointer to the head node, value of deleted node
+Returns		: Pointer to the new head node after deletion
 Function	: This function deletes the value from the specified position in
 			  the list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
 
-size_t SingleLL::DeleteFromPosition(int position) {
-	size_t val;
+SingleLL::Node* SingleLL::DeleteFromPosition(int position, SingleLL::Node* head, int& val) {
 	Node *ptr, *prevPtr;
-	ptr = head;
-	prevPtr = head;
-	int count = 1;	//we consider the head position as the first position
-	while ((count < position) && (ptr->next != NULL)) {
-		prevPtr = ptr;
-		ptr = ptr->next;
-		count++;
+	if (head != NULL) {
+		ptr = head;
+		prevPtr = head;
+		int count = 1;	//we consider the head position as the first position
+		if (position == 1) {
+			head = this->DeleteFromBegin(head, val);
+		}
+		else {
+			while ((count < position) && (ptr->next != NULL)) {
+				prevPtr = ptr;
+				ptr = ptr->next;
+				count++;
+			}
+			val = ptr->val;
+			prevPtr->next = ptr->next;
+			ptr->next = NULL;
+			free(ptr);
+		}
+		return head;
 	}
-	val = ptr->val;
-	prevPtr->next = ptr->next;
-	ptr->next = NULL;
-	free(ptr);
-
-	return val;
+	else {
+		val = NULL;
+		cerr << "Empty list, nothing to delete" << endl;
+		return 0;
+	}	
 }
 
 /*************************************************************************
 Name		: PrintList()
-Parameters	: None
+Parameters	: Pointer to the head node
 Returns		: Nothing
 Function	: This function displays the value stored in the linked list
 Author		: Anupama Rajkumar
 Date		: 20.01.2020
 ***************************************************************************/
-void SingleLL::PrintList() {
-	Node *ptr = head;
-	while (ptr != NULL) {
-		cout << ptr->val << " ";
-		ptr = ptr->next;
+void SingleLL::PrintList(SingleLL::Node* head) {
+	if (head != 0) {
+		Node *ptr = head;
+		while (ptr != NULL) {
+			cout << ptr->val << " ";
+			ptr = ptr->next;
+		}
+		cout << endl;
 	}
-	cout << endl;
+	else {
+		cerr << "Empty list" << endl;
+	}
 }
 
+/*************************************************************************
+Name		: ReverseList()
+Parameters	: Pointer to the head node
+Returns		: Pointer to the new head node
+Function	: This function reverses the linked list
+Author		: Anupama Rajkumar
+Date		: 30.01.2020
+***************************************************************************/
 
-void SingleLL::ReverseList() {
+SingleLL::Node* SingleLL::ReverseList(SingleLL::Node* head) {
 	prev = NULL;
 	current = head;
 	while (current != NULL) {
@@ -359,5 +428,30 @@ void SingleLL::ReverseList() {
 	}
 	head = prev;
 	cout << "The reversed list is:" << endl;
-	this->PrintList();
+	this->PrintList(head);
+	return head;
+}
+
+/*************************************************************************
+Name		: ListLength()
+Parameters	: Pointer to the head node
+Returns		: Length of the list
+Function	: This function returns the length of the list
+Author		: Anupama Rajkumar
+Date		: 31.01.2020
+***************************************************************************/
+
+int SingleLL::ListLength(SingleLL::Node* head) {
+	int cnt = 0;
+	if (head != NULL) {
+		Node* ptr = head;
+		while (ptr != NULL) {
+			cnt += 1;
+			ptr = ptr->next;
+		}
+	}
+	else {
+		cerr << "Empty list" << endl;
+	}
+	return cnt;
 }

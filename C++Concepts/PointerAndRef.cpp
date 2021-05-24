@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+const int MAX = 5;
+
 int main() {
 
 	size_t a = -50000.123; //unsigned int - size of size_t
@@ -39,15 +41,27 @@ int main() {
 
 
 	/***********************************Pointer Arithmetic*****************************************/
+
 	int arr[5] = { 1, 2, 3, 4, 5 };
-	int (*arithPtr)[5];
+	int (*arithPtrArr)[5];
+	int *arithPtr;
+
+	arithPtr = arr;			//this is the pointer to 0th element of the array with base type int
+	arithPtrArr = &arr;		//this is the pointer to the whole array with base type "array of 5 ints"
 
 	for (int i = 0; i < 5; i++) {
 		std::cout << arr[i] << " " << *(arr + i) << " " << &(*(arr+i)) <<   std::endl;
 	}
 	std::cout << std::endl;
-	std::cout << arithPtr << " " << ++arithPtr << " " << ++(*arithPtr) << std::endl;
+	std::cout << "Single pointer at:" << arithPtr << " with value:" << *arithPtr <<  " Size of single pointer:" << sizeof(arithPtr) << " Size of (*arithPtr):" << sizeof(*arithPtr) << std::endl;
+	std::cout << "Pointer array at:" << arithPtrArr << " with value at 0th pos:" << *arithPtrArr[0] << " Size of pointer array:" << sizeof(arithPtrArr) << " Size of (*arithPtrArr):" << sizeof(*arithPtrArr) << std::endl;
+	arithPtr++;
+	arithPtrArr++;
+	std::cout << "Single pointer:" << arithPtr << " Pointer array:" << arithPtrArr << std::endl;
 
+	int arr1[MAX] = { 1, 2, 3, 4, 5 };
+	int *ptrArr1;
+	ptrArr1 = &arr1[MAX - 1];
 
 	/**********************************Pointer Problems*******************************************/
 	/*a. Dangling pointer - when the location that a pointer points to doesnt exist anymore, this leads
@@ -85,7 +99,7 @@ int main() {
 	/*d. Wild pointer - Also unitialised pointer. This pointer is not assgned to any location*/
 	int *wPtr;				//this is a wild pointer as it has not been assigned to any location
 	wPtr = &i;				//not wild pointer anymore
-	std::cout << "The uninitialized pointer points to:" << wPtr << " with value:" << *wPtr << std::endl;
+	std::cout << "The wild pointer points to:" << wPtr << " with value:" << *wPtr << std::endl;
 
 	return 0;
 }

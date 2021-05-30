@@ -14,7 +14,7 @@ int main() {
 	const int *p1 = &q1;	
 	/*int *p1 = &q1; This is incorrect as q1 is contant and hence it should be specified in the declaration
 	of the pointer that it will point to a constant integer*/
-	std::cout << p1 << "\t" << *p1 << "\t" << q1 << " \t" << &q1 << "\t" << *(&q1) << std::endl;
+	std::cout << p1 << "\t" << *p1 << "\t" << q1 << " \t" << &q1 << "\t" << *(&q1) << std::endl; //*p1 - dereferencing
 
 	/*constant pointer to integer - constant addess*/
 	int q2 = 10;

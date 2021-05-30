@@ -94,7 +94,18 @@ int main() {
 	}
 	std::cout << std::endl;
 
-	delete[] a;
+	//delete[] a;
+
+	/************************************/
+	//initialising entire array with 0s
+	int b[10] = { 0 };
+	//in an array, if the first element is initialised, all the other elements are by default initialised to 0
+	for (auto&i : b) {
+		std::cout << i << " " << std::endl;
+	}
+	//variable sized array - compiler doesnt support
+	//const int s = 5;
+	//int v[s];
 
 	return 0;
 }

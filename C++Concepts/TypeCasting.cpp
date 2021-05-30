@@ -1,4 +1,4 @@
-//#if 0
+#if 0
 #include <iostream>
 #include <vector>
 #include <list>
@@ -57,4 +57,4 @@ int main() {
 
 	return 0;
 }
-//#endif
+#endif
